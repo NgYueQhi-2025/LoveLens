@@ -14,17 +14,19 @@ USAGE (multi-page, in main app.py):
     predictor_page.show()
 """
 
-import streamlit as st
-import pandas as pd
-import numpy as np
-import joblib
-import os
 import json
+import os
+from pathlib import Path
+
+import joblib
+import numpy as np
+import pandas as pd
+import streamlit as st
 
 # ─────────────────────────────────────────────
 # PAGE CONFIG (only when run standalone)
 # ─────────────────────────────────────────────
-if __name__ == "__main__" or "predictor" not in st.session_state.get("_loaded_pages", []):
+if __name__ == "__main__":
     st.set_page_config(
         page_title="Match Predictor — Love, Life & Likes",
         page_icon="💘",
@@ -176,9 +178,10 @@ def inject_css():
 # ─────────────────────────────────────────────
 # MODEL LOADING (with built-in fallback)
 # ─────────────────────────────────────────────
-MODEL_PATH = "best_xgb_model.pkl"          # tuned XGBoost
-SCALER_PATH = "scaler.pkl"
-COLUMNS_PATH = "model_columns.json"        # list of feature names after get_dummies
+ROOT = Path(__file__).resolve().parent.parent
+MODEL_PATH = ROOT / "source_code" / "best_xgb_model.pkl"
+SCALER_PATH = ROOT / "source_code" / "scaler.pkl"
+COLUMNS_PATH = ROOT / "source_code" / "model_columns.json"
 
 
 @st.cache_resource
@@ -186,11 +189,11 @@ def load_artifacts():
     """Try to load saved model artifacts; return None if not found."""
     model, scaler, columns = None, None, None
     try:
-        if os.path.exists(MODEL_PATH):
+        if MODEL_PATH.exists():
             model = joblib.load(MODEL_PATH)
-        if os.path.exists(SCALER_PATH):
+        if SCALER_PATH.exists():
             scaler = joblib.load(SCALER_PATH)
-        if os.path.exists(COLUMNS_PATH):
+        if COLUMNS_PATH.exists():
             with open(COLUMNS_PATH) as f:
                 columns = json.load(f)
     except Exception:
@@ -595,7 +598,14 @@ def show():
 
 
 # ─────────────────────────────────────────────
+# MODULE API
+# ─────────────────────────────────────────────
+def render_predictor_page():
+    show()
+
+
+# ─────────────────────────────────────────────
 # STANDALONE ENTRY POINT
 # ─────────────────────────────────────────────
 if __name__ == "__main__":
-    show()
+    render_predictor_page()

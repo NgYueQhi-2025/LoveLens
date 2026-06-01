@@ -4,7 +4,9 @@ import joblib
 import json
 from pathlib import Path
 
+from pages.predictor import render_predictor_page
 from pages.analytics import render_analytics_page
+from pages.performance import render_performance_page
 
 ROOT = Path(__file__).resolve().parent
 
@@ -398,31 +400,31 @@ if view_mode == "Navigation":
         ],
         key="lovelens_nav_page",
     )
+
 else:
     st.sidebar.markdown("### Dashboard Features")
+
     feature_page = st.sidebar.radio(
         "Select one feature",
         [
             "Relationship Prediction",
-            "Dataset Analysis",
             "Visualization Analytics",
             "Model Evaluation",
-            "Machine Learning Insights",
         ],
         key="lovelens_feature_page",
     )
 
-    if feature_page == "Visualization Analytics":
+    if feature_page == "Relationship Prediction":
+        render_predictor_page()
+        st.stop()
+
+    elif feature_page == "Visualization Analytics":
         render_analytics_page()
         st.stop()
 
-    feature_to_page = {
-        "Relationship Prediction": "Home",
-        "Dataset Analysis": "Dataset Overview",
-        "Model Evaluation": "Project Information",
-        "Machine Learning Insights": "Project Information",
-    }
-    page = feature_to_page.get(feature_page, "Home")
+    elif feature_page == "Model Evaluation":
+        render_performance_page()
+        st.stop()
 
 if view_mode == "Dashboard Features":
     st.sidebar.markdown("---")
