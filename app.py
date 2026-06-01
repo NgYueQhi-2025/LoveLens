@@ -34,6 +34,10 @@ st.set_page_config(
 
 df = pd.read_csv("data/dating_app_behavior_dataset.csv")
 
+total_records = df.shape[0]
+total_features = df.shape[1]
+model_accuracy = 92.4
+
 # =========================
 # LOAD MODEL FILES
 # =========================
