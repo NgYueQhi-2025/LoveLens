@@ -141,7 +141,7 @@ pip install -r requirements.txt
 Launch the Streamlit dashboard:
 
 ```bash
-streamlit run app.py
+python -m streamlit run app.py
 ```
 
 The application will automatically open in your browser.
